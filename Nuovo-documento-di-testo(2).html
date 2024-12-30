@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapportini App</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
+
+    <!-- Inizializzazione Firebase -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDqxvc2ZnDHlGg2-6hQkbCuijMb7_1kg8U",
+        authDomain: "rapportini-5daa3.firebaseapp.com",
+        databaseURL: "https://rapportini-5daa3-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rapportini-5daa3",
+        storageBucket: "rapportini-5daa3.firebasestorage.app",
+        messagingSenderId: "379699705045",
+        appId: "1:379699705045:web:7bdf12c154548e57085e5c"
+      };
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+
+    <!-- Styling CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0077b6;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="date"] {
+            padding-right: 20px;
+        }
+
+        button {
+            background-color: #00b4d8;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0077b6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .footer a {
+            color: #00b4d8;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animazione di ingresso del modulo */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .container {
+            animation: slideIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Benvenuto nella tua App di Rapportini</h1>
+
+        <!-- Modulo per inserire un nuovo rapportino -->
+        <form id="rapportinoForm">
+            <label for="dipendente">Nome Dipendente:</label>
+            <input type="text" id="dipendente" required><br>
+
+            <label for="data">Data:</label>
+            <input type="date" id="data" required><br>
+
+            <label for="descrizione">Descrizione:</label>
+            <textarea id="descrizione" rows="4" required></textarea><br>
+
+            <button type="submit">Invia Rapportino</button>
+        </form>
+
+        <div class="footer">
+            <p>&copy; 2024 RapportiniApp. <a href="#">Privacy Policy</a></p>
+        </div>
+    </div>
+
+    <script>
+      document.getElementById("rapportinoForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Raccogli i dati dal modulo
+          const dipendente = document.getElementById("dipendente").value;
+          const data = document.getElementById("data").value;
+          const descrizione = document.getElementById("descrizione").value;
+
+          // Stampa i dati sulla console per verificare che siano corretti
+          console.log(dipendente, data, descrizione);
+
+          // Crea un oggetto con i dati
+          const rapportino = {
+              dipendente: dipendente,
+              data: data,
+              descrizione: descrizione
+          };
+
+          // Salva i dati nel database Firebase
+          firebase.database().ref("rapportini").push(rapportino).then(() => {
+              alert("Rapportino inviato con successo!");
+              document.getElementById("rapportinoForm").reset();
+          }).catch((error) => {
+              console.error("Errore nell'invio:", error);
+          });
+      });
+    </script>
+</body>
+</html>
