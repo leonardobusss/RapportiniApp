@@ -3,188 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapportini App</title>
+    <title>Rapportini Giornalieri</title>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js";
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGJKTlRyqW9CUzeRHVvZVZbwMzs0slu8E",
+            authDomain: "rapportiniroccapietore.firebaseapp.com",
+            databaseURL: "https://rapportiniroccapietore-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "rapportiniroccapietore",
+            storageBucket: "rapportiniroccapietore.firebasestorage.app",
+            messagingSenderId: "1068818597971",
+            appId: "1:1068818597971:web:0a67d80fb8eb4443d2dea6"
+        };
 
-    <!-- Inizializzazione Firebase -->
-    <script>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDGJKTlRyqW9CUzeRHVvZVZbwMzs0slu8E",
-  authDomain: "rapportiniroccapietore.firebaseapp.com",
-  databaseURL: "https://rapportiniroccapietore-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "rapportiniroccapietore",
-  storageBucket: "rapportiniroccapietore.firebasestorage.app",
-  messagingSenderId: "1068818597971",
-  appId: "1:1068818597971:web:0a67d80fb8eb4443d2dea6"
-};
+        // Function to handle form submission
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("rapportinoForm");
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
 
-    <!-- Styling CSS -->
+                const dipendente = document.getElementById("dipendente").value;
+                const data = document.getElementById("data").value;
+                const descrizione = document.getElementById("descrizione").value;
+
+                const rapportino = {
+                    dipendente,
+                    data,
+                    descrizione
+                };
+
+                // Save data to Firebase Realtime Database
+                push(ref(database, "rapportini"), rapportino)
+                    .then(() => {
+                        alert("Rapportino inviato con successo!");
+                        form.reset(); // Clear the form
+                    })
+                    .catch((error) => {
+                        console.error("Errore nell'invio:", error);
+                    });
+            });
+        });
+    </script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            background-color: #f9f9f9;
         }
 
-        .container {
-            background-color: #ffffff;
+        form {
+            background: #fff;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        .container:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
         }
 
         h1 {
             text-align: center;
-            color: #0077b6;
-            font-size: 28px;
+            color: #333;
             margin-bottom: 20px;
         }
 
         label {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
             display: block;
+            margin-bottom: 5px;
         }
 
-        input, textarea {
+        input, textarea, button {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        input[type="date"] {
-            padding-right: 20px;
         }
 
         button {
-            background-color: #00b4d8;
+            background-color: #007BFF;
             color: white;
-            padding: 12px;
-            font-size: 16px;
+            font-weight: bold;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
         }
 
         button:hover {
-            background-color: #0077b6;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        .footer a {
-            color: #00b4d8;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Animazione di ingresso del modulo */
-        @keyframes slideIn {
-            0% {
-                transform: translateY(-50%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .container {
-            animation: slideIn 0.8s ease-out;
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Benvenuto nella tua App di Rapportini</h1>
+    <form id="rapportinoForm">
+        <h1>Modulo Rapportino</h1>
 
-        <!-- Modulo per inserire un nuovo rapportino -->
-        <form id="rapportinoForm">
-            <label for="dipendente">Nome Dipendente:</label>
-            <input type="text" id="dipendente" required><br>
+        <label for="dipendente">Nome Dipendente:</label>
+        <input type="text" id="dipendente" required>
 
-            <label for="data">Data:</label>
-            <input type="date" id="data" required><br>
+        <label for="data">Data:</label>
+        <input type="date" id="data" required>
 
-            <label for="descrizione">Descrizione:</label>
-            <textarea id="descrizione" rows="4" required></textarea><br>
+        <label for="descrizione">Descrizione del lavoro:</label>
+        <textarea id="descrizione" rows="4" required></textarea>
 
-            <button type="submit">Invia Rapportino</button>
-        </form>
-
-        <div class="footer">
-            <p>&copy; 2024 RapportiniApp. <a href="#">Privacy Policy</a></p>
-        </div>
-    </div>
-
-    <script>
-      document.getElementById("rapportinoForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          // Raccogli i dati dal modulo
-          const dipendente = document.getElementById("dipendente").value;
-          const data = document.getElementById("data").value;
-          const descrizione = document.getElementById("descrizione").value;
-
-          // Stampa i dati sulla console per verificare che siano corretti
-          console.log(dipendente, data, descrizione);
-
-          // Crea un oggetto con i dati
-          const rapportino = {
-              dipendente: dipendente,
-              data: data,
-              descrizione: descrizione
-          };
-
-          // Salva i dati nel database Firebase
-          firebase.database().ref("rapportini").push(rapportino).then(() => {
-              alert("Rapportino inviato con successo!");
-              document.getElementById("rapportinoForm").reset();
-          }).catch((error) => {
-              console.error("Errore nell'invio:", error);
-          });
-      });
-    </script>
+        <button type="submit">Invia Rapportino</button>
+    </form>
 </body>
 </html>
