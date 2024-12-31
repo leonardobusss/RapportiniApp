@@ -4,55 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapportini Giornalieri</title>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
-        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDGJKTlRyqW9CUzeRHVvZVZbwMzs0slu8E",
-            authDomain: "rapportiniroccapietore.firebaseapp.com",
-            databaseURL: "https://rapportiniroccapietore-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "rapportiniroccapietore",
-            storageBucket: "rapportiniroccapietore.firebasestorage.app",
-            messagingSenderId: "1068818597971",
-            appId: "1:1068818597971:web:0a67d80fb8eb4443d2dea6"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Function to handle form submission
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("rapportinoForm");
-
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-
-                const dipendente = document.getElementById("dipendente").value;
-                const data = document.getElementById("data").value;
-                const descrizione = document.getElementById("descrizione").value;
-
-                const rapportino = {
-                    dipendente,
-                    data,
-                    descrizione
-                };
-
-                // Save data to Firebase Realtime Database
-                push(ref(database, "rapportini"), rapportino)
-                    .then(() => {
-                        alert("Rapportino inviato con successo!");
-                        form.reset(); // Clear the form
-                    })
-                    .catch((error) => {
-                        console.error("Errore nell'invio:", error);
-                    });
-            });
-        });
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -123,5 +76,51 @@
 
         <button type="submit">Invia Rapportino</button>
     </form>
+
+    <script>
+        // Configurazione Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGJKTlRyqW9CUzeRHVvZVZbwMzs0slu8E",
+            authDomain: "rapportiniroccapietore.firebaseapp.com",
+            databaseURL: "https://rapportiniroccapietore-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "rapportiniroccapietore",
+            storageBucket: "rapportiniroccapietore.firebasestorage.app",
+            messagingSenderId: "1068818597971",
+            appId: "1:1068818597971:web:0a67d80fb8eb4443d2dea6"
+        };
+
+        // Inizializza Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Gestione invio modulo
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("rapportinoForm");
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const dipendente = document.getElementById("dipendente").value;
+                const data = document.getElementById("data").value;
+                const descrizione = document.getElementById("descrizione").value;
+
+                const rapportino = {
+                    dipendente,
+                    data,
+                    descrizione
+                };
+
+                // Salva i dati nel Realtime Database
+                database.ref("rapportini").push(rapportino)
+                    .then(() => {
+                        alert("Rapportino inviato con successo!");
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        console.error("Errore nell'invio:", error);
+                    });
+            });
+        });
+    </script>
 </body>
 </html>
